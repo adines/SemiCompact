@@ -13,7 +13,9 @@
 ## Results
 ### SIIM-ISIC Melanoma
 Accuracy
+
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
+|--|--|--|--|--|--|--|--|
 | ResNet50 | 83.0 | - | - | - | - | - | - |
 | ResNet101 | 83.0 | - | - | - | - | - | - |
 | EfficientNet | 84.0 | - | - | - | - | - | - |
@@ -26,7 +28,9 @@ Accuracy
 | ShuffleNet | 78.5 | 77.5 | 78.0 | 77.5 | 77.5 | 78.5 | - |
 
 F1-Score
+
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
+|--|--|--|--|--|--|--|--|
 | ResNet50 | 82.8 | - | - | - | - | - | - |
 | ResNet101 | 82.1 | - | - | - | - | - | - |
 | EfficientNet | 82.8 | - | - | - | - | - | - |
@@ -39,7 +43,9 @@ F1-Score
 | ShuffleNet | 80.5 | 76.7 | 77.3 | 74.6 | 73.4 | 81.1 | - |
 
 Precision
+
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
+|--|--|--|--|--|--|--|--|
 | ResNet50 | 83.7 | - | - | - | - | - | - |
 | ResNet101 | 86.7 | - | - | - | - | - | - |
 | EfficientNet | 89.5 | - | - | - | - | - | - |
@@ -52,7 +58,9 @@ Precision
 | ShuffleNet | 73.6 | 79.6 | 79.8 | 85.7 | 89.9 | 72.4 | - |
 
 Recall
+
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
+|--|--|--|--|--|--|--|--|
 | ResNet50 | 82.0 | - | - | - | - | - | - |
 | ResNet101 | 78.0 | - | - | - | - | - | - |
 | EfficientNet | 77.0 | - | - | - | - | - | - |
@@ -65,7 +73,9 @@ Recall
 | ShuffleNet | 89.0 | 74.0 | 75.0 | 66.0 | 62.0 | **92.0** | - |
 
 ### APTOS Blindness
+
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
+|--|--|--|--|--|--|--|--|
 | ResNet50 | 82.1 | - | - | - | - | - | - |
 | ResNet101 | 83.0 | - | - | - | - | - | - |
 | EfficientNet | 82.1 | - | - | - | - | - | - |
