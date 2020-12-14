@@ -72,41 +72,16 @@ def omniData(path, pathUnlabelled,learn, transforms,th):
     shutil.copytree(path, newPath)
 
     for image in images:
-
-    # Cambiar por las transformaciones pasada
-        im=cv2.imread(image,1)
+        im = cv2.imread(image, 1)
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-        lista=[]
-        n=im
-        pn=learn.predict(n)
+        lista = []
+
+        pn = learn.predict(im)
         lista.append(pn)
 
-        h_im=cv2.flip(im,0)
-        h=h_im
-        ph=learn.predict(h)
-        lista.append(ph)
-
-        v_im=cv2.flip(im,1)
-        pv=learn.predict(v_im)
-        lista.append(pv)
-        b_im=cv2.flip(im,-1)
-
-        pb=learn.predict(b_im)
-        lista.append(pb)
-        blur_im=cv2.blur(im,(5,5))
-
-        pblur=learn.predict(blur_im)
-        lista.append(pblur)
-        invGamma=1.0
-        table=np.array([((i/255.0)**invGamma)*255 for i in np.arange(0,256)]).astype('uint8')
-        gamma_im = cv2.LUT(im, table)
-
-        pgamma = learn.predict(gamma_im)
-        lista.append(pgamma)
-        gblur_im = cv2.GaussianBlur(im, (5, 5), cv2.BORDER_DEFAULT)
-
-        pgblur = learn.predict(gblur_im)
-        lista.append(pgblur)
+        for transform in transforms:
+            pred=learn.predict(getTransform(transform,im))
+            lista.append(pred)
 
         mod, predMax = moda(lista)
         if predMax > th:
@@ -127,35 +102,13 @@ def omniModelData(path, pathUnlabelled,learners,transforms,th):
         for learn in learners:
             im=cv2.imread(image,1)
             im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-          # n=Image(pil2tensor(im, dtype=np.float32).div_(255))
             pn=learn.predict(im)
             lista.append(pn)
-            h_im=cv2.flip(im,0)
-          #h=Image(pil2tensor(h_im, dtype=np.float32).div_(255))
-            ph=learn.predict(h_im)
-            lista.append(ph)
-            v_im=cv2.flip(im,1)
-          #v=Image(pil2tensor(v_im, dtype=np.float32).div_(255))
-            pv=learn.predict(v_im)
-            lista.append(pv)
-            b_im=cv2.flip(im,-1)
-          #b=Image(pil2tensor(b_im, dtype=np.float32).div_(255))
-            pb=learn.predict(b_im)
-            lista.append(pb)
-            blur_im=cv2.blur(im,(5,5))
-          #blur=Image(pil2tensor(blur_im, dtype=np.float32).div_(255))
-            pblur=learn.predict(blur_im)
-            lista.append(pblur)
-            invGamma=1.0
-            table=np.array([((i/255.0)**invGamma)*255 for i in np.arange(0,256)]).astype('uint8')
-            gamma_im=cv2.LUT(im,table)
-          #gamma=Image(pil2tensor(gamma_im, dtype=np.float32).div_(255))
-            pgamma=learn.predict(gamma_im)
-            lista.append(pgamma)
-            gblur_im=cv2.GaussianBlur(im,(5,5),cv2.BORDER_DEFAULT)
-            #gblur=Image(pil2tensor(gblur_im, dtype=np.float32).div_(255))
-            pgblur=learn.predict(gblur_im)
-            lista.append(pgblur)
+
+            for transform in transforms:
+                pred=learn.predict(getTransform(transform,im))
+                lista.append(pred)
+
         mod, predMax=moda(lista)
         if predMax > th:
             shutil.copyfile(image, newPath + os.sep + 'train' + os.sep + learn.dls.vocab[mod] + os.sep + learn.dls.vocab[
@@ -277,3 +230,31 @@ def getModel(model,numClasses):
     modelo='create_'+model.lower()
     method=getattr(importlib.import_module("API.utils"),modelo)
     return method(numClasses)
+
+
+
+def getTransform(transform, image):
+    if transform=="H Flip":
+        return cv2.flip(image,0)
+    elif transform=="V Flip":
+        return cv2.flip(image,1)
+    elif transform=="H+V Flip":
+        return cv2.flip(image,-1)
+    elif transform=="Blurring":
+        return cv2.blur(image,(5,5))
+    elif transform=="Gamma":
+        invGamma = 1.0
+        table = np.array([((i / 255.0) ** invGamma) * 255 for i in np.arange(0, 256)]).astype('uint8')
+        return cv2.LUT(image, table)
+    elif transform=="Gaussian Blur":
+        return cv2.GaussianBlur(image,(5,5),cv2.BORDER_DEFAULT)
+    elif transform=="Median Blur":
+        return cv2.medianBlur(image,5)
+    elif transform=="Bilateral Filter":
+        return cv2.bilateralFilter(image,9,75,75)
+    elif transform=="Equalize histogram":
+        equ_im = cv2.equalizeHist(image)
+        return np.hstack((image, equ_im))
+    elif transform=="2D-Filter":
+        kernel = np.ones((5, 5), np.float32) / 25
+        return cv2.filter2D(image, -1, kernel)
