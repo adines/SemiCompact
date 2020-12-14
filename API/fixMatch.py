@@ -241,11 +241,11 @@ def get_strong_transforms():
   )[0]
   return strong_transforms
 
-def get_extra_strong_transforms():
+def get_extra_strong_transforms(size=(224,224)):
   custom_transforms = torchvision.transforms.Compose([
     torchvision.transforms.ToPILImage(),
     torchvision.transforms.RandomCrop(300, pad_if_needed=True, padding_mode="reflect"),
-    torchvision.transforms.Resize(train_image_size),
+    torchvision.transforms.Resize(size),
     torchvision.transforms.ColorJitter(0, 0, 0.9, 0.2),
     torchvision.transforms.ToTensor(),
     # torchvision.transforms.ToPILImage(),
@@ -253,11 +253,11 @@ def get_extra_strong_transforms():
   return custom_transforms
 
 
-def get_unlabeled_data(unlabeled_dir, labeled_data, n_augment=2, batch_multiplier=2):
+def get_unlabeled_data(unlabeled_dir, labeled_data, n_augment=2, batch_multiplier=2, newsize=(224,224)):
     u_image_list = ImageList.from_folder(unlabeled_dir).split_none()
     u_image_list.train._label_list = partial(MultiTfmPairLabelList, K=n_augment,
                                              weak_tfms=get_weak_transforms(), strong_tfms=get_strong_transforms(),
-                                             extra_strong_tfms=get_extra_strong_transforms())
+                                             extra_strong_tfms=get_extra_strong_transforms(newsize))
     u_databunch = (u_image_list.label_empty()
                    .databunch(
         bs=labeled_data.batch_size * batch_multiplier,
@@ -265,6 +265,3 @@ def get_unlabeled_data(unlabeled_dir, labeled_data, n_augment=2, batch_multiplie
                    .normalize(labeled_data.stats))
     u_databunch.c = 1
     return u_databunch
-
-
-unlabeled_data = get_unlabeled_data('datasetRetina/', labeled_data, batch_multiplier=2)

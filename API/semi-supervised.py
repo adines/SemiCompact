@@ -2,6 +2,7 @@ from API.utils import *
 from fastai.vision.all import *
 import fastai
 import torchvision.models as models
+from API.fixMatch import *
 
 
 def distillation(baseModel, targetModel, path, pathUnlabelled, outputPath, bs=32, size=224, confidence=0.8):
@@ -199,7 +200,30 @@ def fixMatch(targetModel, path, pathUnlabelled,outputPath, bs=32, size=224):
     elif not testPath(path):
         print("The path is invalid or has an invalid structure")
     else:
-        pass
+        labeled_data = (ImageList.from_folder(path)
+                        .split_by_folder()
+                        .label_from_folder()
+                        .transform(get_transforms(), size=(size,size))
+                        .databunch(bs=bs)
+                        .normalize()
+                        )
+
+        unlabeled_data = get_unlabeled_data(pathUnlabelled, labeled_data, batch_multiplier=2,size=(size,size))
+        model=getModel(targetModel,labeled_data.c)
+        learn = Learner(labeled_data, model,
+                        metrics=[accuracy]).fixmatch(unlabeled_data)
+        save = SaveModelCallback(learn, monitor='accuracy', name=outputPath+os.sep+'model-'+targetModel+'-fixmatch')
+        early = EarlyStoppingCallback(learn, monitor='accuracy', patience=8)
+
+        # learn.fine_tune(50,freeze_epochs=2)
+        learn.fit_one_cycle(2, callbacks=[save, early])
+        learn.unfreeze()
+        learn.lr_find()
+        lr = learn.recorder.lrs[np.argmin(learn.recorder.losses)]
+        if lr < 1e-05:
+            lr = 1e-03
+        learn.fit_one_cycle(50, max_lr=lr / 10, callbacks=[save, early])
+        learn.save(outputPath+os.sep+targetModel+'-fixmatch')
 
 
 def mixMatch(targetModel, path, pathUnlabelled,outputPath, bs=32, size=224):
