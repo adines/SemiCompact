@@ -24,7 +24,7 @@ import importlib
 
 
 availableModels=['ResNet18','ResNet50','ResNet101','EfficientNet','FBNet','MixNet','MNasNet','MobileNet','SqueezeNet','ShuffleNet']
-
+availableTransforms=['H Flip','V Flip','H+V Flip','Blurring','Gamma','Gaussian Blur','Median Blur','Bilateral Filter','Equalize histogram','2D-Filter']
 
 def testNameModel(model):
     return model in availableModels
@@ -38,6 +38,11 @@ def testPath(path):
     else:
         return False
 
+def testTransforms(transforms):
+    for transform in transforms:
+        if not transform in availableTransforms:
+            return False
+    return True
 
 # Distillation
 def moda(lista):

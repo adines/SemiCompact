@@ -55,6 +55,8 @@ def dataDistillation(baseModel, targetModel, transforms, path, pathUnlabelled, o
         print("The target model selected is not valid")
     elif not testPath(path):
         print("The path is invalid or has an invalid structure")
+    elif not testTransforms(transforms):
+        print("There are invalid transforms")
     else:
         # Load images
         dls = ImageDataLoaders.from_folder(path, batch_tfms=aug_transforms(), item_tfms=Resize(size), bs=bs)
@@ -149,6 +151,8 @@ def modelDataDistillation(baseModels, targetModel, transforms, path, pathUnlabel
         print("The target model selected is not valid")
     elif not testPath(path):
         print("The path is invalid or has an invalid structure")
+    elif not testTransforms(transforms):
+        print("There are invalid transforms")
     else:
         # Load images
         learners=[]
