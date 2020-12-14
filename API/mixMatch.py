@@ -7,21 +7,7 @@ from fastai.callbacks.tracker import *
 from fastai.callbacks.hooks import *
 
 
-train_size = 224
 seed = 1234
-bs = 32
-
-path="blindness"
-
-labeled_data = (ImageList.from_folder(path)
-  .split_by_folder()
-  .label_from_folder()
-  .transform(get_transforms(), size=train_size)
-  .databunch(bs=bs)
-  .normalize()
-)
-
-unlabeled_data = (ImageList.from_folder('datasetRetina/')) #.transform(get_transforms(), size=train_size))
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -157,7 +143,7 @@ class MixMatchCallback(LearnerCallback):
 
         self.learn, self.T, self.K, self.α, self.λ = learn, T, K, α, λ
         self.labeled_dl = labeled_data.train_dl
-        self.n_classes = 5 #labeled_data.c
+        self.n_classes =labeled_data.c
         self.labeled_data = labeled_data
 
     def on_train_begin(self, n_epochs, **kwargs):
@@ -196,7 +182,7 @@ class MixMatchCallback(LearnerCallback):
                 for i in range(last_input.shape[1])], dim=1), dim=2).mean(dim=1), T=self.T)
         # print( Uy.size(-1))
         # qb = Uy.repeat(1, 2).view((-1, Uy.size(-1)))
-        qb = Uy.repeat(1, 2).view((-1, 5))
+        qb = Uy.repeat(1, 2).view((-1, self.labeled_data.c))
 
         # MIX
         Wx = torch.cat((Xx, Ux), dim=0)
