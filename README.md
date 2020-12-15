@@ -22,16 +22,16 @@ features of these networks in the following table.
 
 | Network | Params (M) | FLOPs (M) | Top-1 acc (%) | Top-5 acc (%) | Design | Implementation |
 |--|--|--|--|--|--|--|
-| ResNet50 | 26 | 4100 | 76.0 | 93.0 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
-| ResNet101 | 44 | 8540 | 80.9 | 95.6 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| ResNet50 | 26 | 4100 | 76.0 | 93.0 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| ResNet101 | 44 | 8540 | 80.9 | 95.6 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
 | EfficientNet | 12 | 1800 | 81.6 | 95.7 | Auto | [Unofficial Pytorch](https://github.com/lukemelas/EfficientNet-PyTorch) |
 | FBNet | 9.4 | 753 | 78.9 | 94.3 | Auto | [Facebook](https://github.com/facebookresearch/mobile-vision)
 | MixNet | 5 | 360 | 78.9 | 94.2 | Auto | [Unofficial implementation](https://github.com/ansleliu/MixNet-PyTorch)
-| MNasNet | 5.2 | 403 | 75.6 | 92.7 | Auto | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
-| MobileNet | 3.4 | 300 | 74.7 | 92.5 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
-| ResNet18 | 11 | 1300 | 69.6 | 89.2 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
-| SqeezeNet | 1.3 | 833 | 57.5 | 80.3 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
-| ShuffleNet | 5.3 | 524 | 69.4 | 88.3 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| MNasNet | 5.2 | 403 | 75.6 | 92.7 | Auto | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| MobileNet | 3.4 | 300 | 74.7 | 92.5 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| ResNet18 | 11 | 1300 | 69.6 | 89.2 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html)|
+| SqeezeNet | 1.3 | 833 | 57.5 | 80.3 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| ShuffleNet | 5.3 | 524 | 69.4 | 88.3 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
 
 
 ## Results
