@@ -1,18 +1,58 @@
-# SOTA-tinyML
+# Semi-Supervised Learning for Image Classification using Compact Networks in the Medical Context
+The development of mobile applications that embed deep convolutional neural models 
+has the potential to revolutionise healthcare. However, most deep learning models 
+require computational resources that are not available in smartphones or edge devices; 
+an issue that can be faced by means of compact models. The problem with such models is that 
+they are, at least usually, less accurate than bigger models.
+In this work, we address this limitation of compact networks with the application of 
+semi-supervised learning techniques, which take advantage of unlabelled data. 
+Using this combination, we have shown that it is possible to construct compact 
+models as accurate as bigger models in two widely employed datasets for [melanoma 
+classification](https://www.kaggle.com/c/siim-isic-melanoma-classification) 
+and [diabetic retinopathy detection](https://journals.sagepub.com/doi/10.1177/193229680900300315). 
+Finally, to facilitate the application of the methods studied in this work, we have developed a 
+library that simplifies the construction of compact models using semi-supervised learning methods. 
 
-## Networks:
-* SqueezeNet: [Available at Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) 
-* ShuffleNet v2: [Available at Pytorch](https://pytorch.org/docs/stable/torchvision/models.html)
-* MobileNet v2: [Available at Pytorch](https://pytorch.org/docs/stable/torchvision/models.html)
-* MNasNet: [Available at Pytorch](https://pytorch.org/docs/stable/torchvision/models.html)
-* FBNetsV2: [Available at Facebook GitHub repository](https://github.com/facebookresearch/mobile-vision)
-* MixNet: [Pytorch implementation](https://github.com/ansleliu/MixNet-PyTorch)
-* Single-Path Nas
+## Networks
+In this work, we explore a variety of both manually and automatically designed architectures. 
+Namely, we have employed 4 manually designed compact networks, and 3 automatically desiged 
+networks. In addition, for our experiments, we have considered three standard size networks 
+that are Resnet-50 and Resnet-101, and EfficientNet-B3. We provide a comparison of different 
+features of these networks in the following table.
+
+| Network | Params (M) | FLOPs (M) | Top-1 acc (%) | Top-5 acc (%) | Design | Implementation |
+|--|--|--|--|--|--|--|
+| ResNet50 | 26 | 4100 | 76.0 | 93.0 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| ResNet101 | 44 | 8540 | 80.9 | 95.6 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| EfficientNet | 12 | 1800 | 81.6 | 95.7 | Auto | [Unofficial Pytorch](https://github.com/lukemelas/EfficientNet-PyTorch) |
+| FBNet | 9.4 | 753 | 78.9 | 94.3 | Auto | [Facebook](https://github.com/facebookresearch/mobile-vision)
+| MixNet | 5 | 360 | 78.9 | 94.2 | Auto | [Unofficial implementation](https://github.com/ansleliu/MixNet-PyTorch)
+| MNasNet | 5.2 | 403 | 75.6 | 92.7 | Auto | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| MobileNet | 3.4 | 300 | 74.7 | 92.5 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| ResNet18 | 11 | 1300 | 69.6 | 89.2 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| SqeezeNet | 1.3 | 833 | 57.5 | 80.3 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
+| ShuffleNet | 5.3 | 524 | 69.4 | 88.3 | Manual | [Official Pytorch]((https://pytorch.org/docs/stable/torchvision/models.html)) |
 
 
 ## Results
+In this section, we present a thorough analysis for the results obtained by the 7 
+compact networks and the 6 semi-supervised processes. In particular, we first compare 
+the performance of the networks when training using only the labelled data. 
+Then, we study the impact of applying the different semi-supervised methods. 
+
+All the networks used in our experiments are implemented in Pytorch, and have been trained 
+thanks to the functionality of the Fastai library. In addition, we have used a 
+GPU Nvidia RTX 2080 Ti for training the models.
+
 ### SIIM-ISIC Melanoma
-Accuracy
+Performance comparison of the different architectures trained with the seven 
+different processes (Base, PD: Plain Distillation, DD: Data Distillation, MD: Model 
+Distillation, MDD: Model Data Distillation, FixMatch and MixMatch) in the SIIM-ISIC Melanoma dataset. 
+In bold face the best model.
+
+In this case we have used 4 different metrics: Accuracy, F1-score, Precision and Recall;
+to compare the performance of the different architectures.
+#### Accuracy
 
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
 |--|--|--|--|--|--|--|--|
@@ -27,7 +67,7 @@ Accuracy
 | SqeezeNet | 78.5 | 78.5 | 80.5 | 80.5 | 77.5 | 77.0 | 83.0 |
 | ShuffleNet | 78.5 | 77.5 | 78.0 | 77.5 | 77.5 | 78.5 | 75.0 |
 
-F1-Score
+#### F1-Score
 
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
 |--|--|--|--|--|--|--|--|
@@ -42,7 +82,7 @@ F1-Score
 | SqeezeNet | 78.2 | 75.1 | 78.7 | 77.2 | 73.7 | 77.2 | 83.7 |
 | ShuffleNet | 80.5 | 76.7 | 77.3 | 74.6 | 73.4 | 81.1 | 78.8 |
 
-Precision
+#### Precision
 
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
 |--|--|--|--|--|--|--|--|
@@ -57,7 +97,7 @@ Precision
 | SqeezeNet | 79.4 | 89.0 | 86.7 | 93.0 | 88.7 | 76.5 | 80.6 |
 | ShuffleNet | 73.6 | 79.6 | 79.8 | 85.7 | 89.9 | 72.4 | 68.4 |
 
-Recall
+#### Recall
 
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
 |--|--|--|--|--|--|--|--|
@@ -73,6 +113,13 @@ Recall
 | ShuffleNet | 89.0 | 74.0 | 75.0 | 66.0 | 62.0 | 92.0 | **93.0** |
 
 ### APTOS Blindness
+Performance comparison of the different architectures trained with the seven 
+different processes (Base, PD: Plain Distillation, DD: Data Distillation, MD: Model 
+Distillation, MDD: Model Data Distillation, FixMatch and MixMatch) in the APTOS Blindness dataset. 
+In bold face the best model.
+
+In this case we have a multiclass classification problem and then we have only used Accuracy
+to compare the performance of the different architectures.
 
 | Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
 |--|--|--|--|--|--|--|--|
