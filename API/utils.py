@@ -10,17 +10,18 @@ from fastai.vision.learner import *
 import fastai
 import torchvision.models as models
 import sys
-sys.path.insert(0, '../melanoma/mobile_vision/')
+import os
 
-from mobile_cv.model_zoo.models.fbnet_v2 import fbnet
+
+
+
+
 from efficientnet_pytorch import EfficientNet
 
-sys.path.insert(0, '../melanoma/MixNet-PyTorch/')
 
-from mixnet import MixNet
+
+
 import importlib
-
-
 
 
 availableModels=['ResNet18','ResNet50','ResNet101','EfficientNet','FBNet','MixNet','MNasNet','MobileNet','SqueezeNet','ShuffleNet']
@@ -136,6 +137,10 @@ def plainSupervised(path,pathUnlabelled,learn,th):
 
 # Modelos
 def create_fbnet(num_classes):
+    if not os.path.exists('mobile_vision'):
+        os.system("git clone https://github.com/facebookresearch/mobile-vision.git")
+        sys.path.insert(0, 'mobile_vision/')
+    from mobile_cv.model_zoo.models.fbnet_v2 import fbnet
     model = fbnet("dmasking_l3", pretrained=True)
     body=model.backbone
     nf = num_features_model(nn.Sequential(*body.children())) * (2)
@@ -157,9 +162,13 @@ def create_efficientnet(num_classes):
     return EfficientNet.from_pretrained('efficientnet-b3',num_classes=num_classes)
 
 def create_mixnet(num_classes):
+    if not os.path.exists('MixNet-PyTorch'):
+        os.system("git clone https://github.com/ansleliu/MixNet-PyTorch.git")
+        sys.path.insert(0, 'MixNet-PyTorch/')
+    from mixnet import MixNet
     arch = "l"
     body = MixNet(arch=arch, num_classes=num_classes).cuda()
-    checkpoint = torch.load("../melanoma/MixNet-PyTorch/pretrained_weights/mixnet_{}_top1v_78.6.pkl".format(arch))
+    checkpoint = torch.load("MixNet-PyTorch/pretrained_weights/mixnet_{}_top1v_78.6.pkl".format(arch))
     pre_weight = checkpoint['model_state']
     model_dict = body.state_dict()
     pretrained_dict = {"module." + k: v for k, v in pre_weight.items() if "module." + k in model_dict}
@@ -167,7 +176,7 @@ def create_mixnet(num_classes):
     body.load_state_dict(model_dict)
     body = nn.Sequential(*list(body.children())[:-1])
     nf = num_features_model(nn.Sequential(*body.children())) * (2)
-    head = create_head(nf, dls.c)
+    head = create_head(nf, num_classes)
     model = nn.Sequential(body, head)
     apply_init(model[1], nn.init.kaiming_normal_)
     return model
