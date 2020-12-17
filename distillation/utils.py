@@ -11,17 +11,9 @@ import fastai
 import torchvision.models as models
 import sys
 import os
-
-
-
-
-
 from efficientnet_pytorch import EfficientNet
-
-
-
-
 import importlib
+import sys
 
 
 availableModels=['ResNet18','ResNet50','ResNet101','EfficientNet','FBNet','MixNet','MNasNet','MobileNet','SqueezeNet','ShuffleNet']
@@ -45,7 +37,7 @@ def testTransforms(transforms):
             return False
     return True
 
-# Distillation
+# distillation
 def moda(lista):
     tam=len(lista[0][2])
     x=np.zeros(tam)
@@ -59,8 +51,14 @@ def moda(lista):
 def omniModel(path, pathUnlabelled,learners,th):
     images=sorted(glob.glob(pathUnlabelled+os.sep+"*"))
     i=path.rfind(os.sep)
-    newPath=path[:i] + "_tmp"
-    shutil.copytree(path, newPath)
+    if i!=-1:
+        newPath = path[:i] + "_tmp"
+    else:
+        newPath = path + "_tmp"
+    if not os.path.exists(newPath):
+        shutil.copytree(path, newPath)
+    else:
+        raise Exception("The path "+newPath+" already exists")
     for image in images:
         lista=[]
         for learn in learners:
@@ -74,8 +72,14 @@ def omniModel(path, pathUnlabelled,learners,th):
 def omniData(path, pathUnlabelled,learn, transforms,th):
     images=sorted(glob.glob(pathUnlabelled+os.sep+"*"))
     i = path.rfind(os.sep)
-    newPath = path[:i] + "_tmp"
-    shutil.copytree(path, newPath)
+    if i!=-1:
+        newPath = path[:i] + "_tmp"
+    else:
+        newPath = path + "_tmp"
+    if not os.path.exists(newPath):
+        shutil.copytree(path, newPath)
+    else:
+        raise Exception("The path "+newPath+" already exists")
 
     for image in images:
         im = cv2.imread(image, 1)
@@ -101,8 +105,14 @@ def omniModelData(path, pathUnlabelled,learners,transforms,th):
     images = sorted(glob.glob(pathUnlabelled + os.sep + "*"))
 
     i = path.rfind(os.sep)
-    newPath = path[:i] + "_tmp"
-    shutil.copytree(path, newPath)
+    if i!=-1:
+        newPath = path[:i] + "_tmp"
+    else:
+        newPath = path + "_tmp"
+    if not os.path.exists(newPath):
+        shutil.copytree(path, newPath)
+    else:
+        raise Exception("The path "+newPath+" already exists")
     for image in images:
         lista=[]
         for learn in learners:
@@ -125,11 +135,17 @@ def omniModelData(path, pathUnlabelled,learners,transforms,th):
 def plainSupervised(path,pathUnlabelled,learn,th):
     images=sorted(glob.glob(pathUnlabelled+os.sep+"*"))
     i = path.rfind(os.sep)
-    newPath = path[:i] + "_tmp"
-    shutil.copytree(path, newPath)
+    if i!=-1:
+        newPath = path[:i] + "_tmp"
+    else:
+        newPath = path + "_tmp"
+    if not os.path.exists(newPath):
+        shutil.copytree(path, newPath)
+    else:
+        raise Exception("The path "+newPath+" already exists")
     for image in images:
         pn=learn.predict(image)
-        if pn[2]>th:
+        if pn[2][pn[2].argmax()]>th:
             shutil.copyfile(image,newPath+os.sep+'train'+os.sep+pn[0]+os.sep+pn[0]+'_'+image.split(os.sep)[-1])
             print(image+" --> "+newPath+os.sep+'train'+os.sep+pn[0]+os.sep+pn[0]+'_'+image.split(os.sep)[-1])
 
@@ -211,7 +227,7 @@ def create_shufflenet(num_classes):
     elif callable(cut):
         body= cut(body)
     else:
-        raise NamedError("cut must be either integer or function")
+        raise Exception("cut must be either integer or function")
 
     nf = num_features_model(nn.Sequential(*body.children())) * (2)
     head = create_head(nf, num_classes)
@@ -231,7 +247,7 @@ def create_squeezenet(num_classes):
     elif callable(cut):
         body= cut(body)
     else:
-        raise NamedError("cut must be either integer or function")
+        raise Exception("cut must be either integer or function")
     nf = num_features_model(nn.Sequential(*body.children())) * (2)
     head = create_head(nf, num_classes)
     model = nn.Sequential(body, head)
@@ -242,7 +258,7 @@ def create_squeezenet(num_classes):
 
 def getModel(model,numClasses):
     modelo='create_'+model.lower()
-    method=getattr(importlib.import_module("API.utils"),modelo)
+    method=getattr(importlib.import_module("distillation.utils"),modelo)
     return method(numClasses)
 
 
