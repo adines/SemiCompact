@@ -1,135 +1,117 @@
 # Semi-Supervised Learning for Image Classification using Compact Networks in the Medical Context
-The development of mobile applications that embed deep convolutional neural models 
-has the potential to revolutionise healthcare. However, most deep learning models 
-require computational resources that are not available in smartphones or edge devices; 
-an issue that can be faced by means of compact models. The problem with such models is that 
-they are, at least usually, less accurate than bigger models.
-In this work, we address this limitation of compact networks with the application of 
-semi-supervised learning techniques, which take advantage of unlabelled data. 
-Using this combination, we have shown that it is possible to construct compact 
-models as accurate as bigger models in two widely employed datasets for [melanoma 
-classification](https://www.kaggle.com/c/siim-isic-melanoma-classification) 
-and [diabetic retinopathy detection](https://journals.sagepub.com/doi/10.1177/193229680900300315). 
-Finally, to facilitate the application of the methods studied in this work, we have developed a 
-library that simplifies the construction of compact models using semi-supervised learning methods. 
+The development of mobile and on the edge applications that embed deep convolutional neural models has the potential to revolutionise healthcare. However, most deep learning models require computational resources that are not available in smartphones or edge devices; an issue that can be faced by means of compact models that require less resources than standard deep learning models. The problem with such models is that they are, at least usually, less accurate than bigger models. We address the accuracy limitation of compact networks with the application of semi-supervised learning techniques, which take advantage of unlabelled data. In particular, we study the application of self-training methods, consistency regularisation techniques and quantization techniques. In addition, we have developed a Python library in order to facilitate the combination of compact networks and semi-supervised learning methods to tackle image classification tasks. We present a thorough analysis for the results obtained by combining 9 compact networks and 6 semi-supervised processes when applied to 10 biomedical datasets. In particular, we first compare the performance of the networks when training using only labelled data, and, we observe that there are not significant differences between FBNet, MixNet, MNasNet and ResNet18 compact networks and standard size models. Then, we study the impact of applying the different semi-supervised methods, and we can conclude that combining Data Distillation and MixNet, and Plain Distillation and ResNet18 the best results are obtained. Finally, we analyse the efficiency of each network and we can conclude that compact networks outperforms standard size networks.
+
+
+## Installation
+In this api we present different semi-supervised methods grouped into two different families: self-training methods and consistency-regularization methods.
+
+Self-training methods are available in PyPi for Python 3.6 and Fastai v2. To use it, you have to install Python 3.6 and pip.
+````
+    sudo pip3 install compact-distillation
+````
+
+Consistency-regularization methods are available in PyPi for Python 3.6 and Fastai v1. To use it, you have to install Python 3.6 and pip.
+````
+    sudo pip3 install compact-consistencyReg
+````
+
+## Semi-supervised Methods
+In this api we present different semi-supervised methods grouped into two different families: self-training methods and consistency-regularization methods.
+
+### Self-training methods
+The self-training methods are the following, for more information of this methods see [this](https://www.sciencedirect.com/science/article/pii/S0169260720316151):
+- Plain Distillation $\rightarrow$ plainDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath,confidence)
+- Data Distillation $\rightarrow$ dataDistillation(baseModel, targetModel, transforms, path, pathUnlabelled, outputPath, confidence)
+- Model Distillation $\rightarrow$ modelDistillation(baseModels, targetModel, path, pathUnlabelled, outputPath, confidence)
+- ModelData Distillation $\rightarrow$ modelDataDistillation(baseModels, targetModel,transforms, path, pathUnlabelled, outputPath, confidence)
+
+
+### Consistency-regularization methods
+The consistency regularization methods are the following, for more information see this [link](https://proceedings.neurips.cc/paper/2016/file/30ef30b64204a3088a26bc2e6ecf7602-Paper.pdf):
+- FixMatch $\rightarrow$ FixMatch(targetModel, path, pathUnlabelled, outputPath)
+- MixMatch $\rightarrow$ MixMatch(targetModel, path, pathUnlabelled, outputPath)
+
 
 ## Networks
-In this work, we explore a variety of both manually and automatically designed architectures. 
-Namely, we have employed 4 manually designed compact networks, and 3 automatically desiged 
-networks. In addition, for our experiments, we have considered three standard size networks 
+In this work, we explore a variety of manually designed architectures, automatically designed architectures and quantized networks. 
+Namely, we have employed 4 manually designed compact networks, 3 automatically desiged 
+networks and 2 quantized networks. In addition, for our experiments, we have considered three standard size networks 
 that are Resnet-50 and Resnet-101, and EfficientNet-B3. We provide a comparison of different 
 features of these networks in the following table.
 
 | Network | Params (M) | FLOPs (M) | Top-1 acc (%) | Top-5 acc (%) | Design | Implementation |
 |--|--|--|--|--|--|--|
-| ResNet50 | 26 | 4100 | 76.0 | 93.0 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
-| ResNet101 | 44 | 8540 | 80.9 | 95.6 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| ResNet50 | 26 | 4100 | 76.0 | 93.0 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html) |
+| ResNet101 | 44 | 8540 | 80.9 | 95.6 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html) |
 | EfficientNet | 12 | 1800 | 81.6 | 95.7 | Auto | [Unofficial Pytorch](https://github.com/lukemelas/EfficientNet-PyTorch) |
-| FBNet | 9.4 | 753 | 78.9 | 94.3 | Auto | [Facebook](https://github.com/facebookresearch/mobile-vision)
-| MixNet | 5 | 360 | 78.9 | 94.2 | Auto | [Unofficial Pytorch](https://github.com/ansleliu/MixNet-PyTorch)
-| MNasNet | 5.2 | 403 | 75.6 | 92.7 | Auto | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
-| MobileNet | 3.4 | 300 | 74.7 | 92.5 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
-| ResNet18 | 11 | 1300 | 69.6 | 89.2 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html)|
-| SqeezeNet | 1.3 | 833 | 57.5 | 80.3 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
-| ShuffleNet | 5.3 | 524 | 69.4 | 88.3 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| FBNet | 9.4 | 753 | 78.9 | 94.3 | Auto | [Timm model](https://rwightman.github.io/pytorch-image-models/models/)
+| MixNet | 5 | 360 | 78.9 | 94.2 | Auto | [Timm model](https://rwightman.github.io/pytorch-image-models/models/)
+| MNasNet | 5.2 | 403 | 75.6 | 92.7 | Auto | [Timm model](https://rwightman.github.io/pytorch-image-models/models/) |
+| MobileNet | 3.4 | 300 | 74.7 | 92.5 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html) |
+| ResNet18 | 11 | 1300 | 69.6 | 89.2 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html)|
+| SqeezeNet | 1.3 | 833 | 57.5 | 80.3 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html) |
+| ShuffleNet | 5.3 | 524 | 69.4 | 88.3 | Manual | [Official Pytorch](https://pytorch.org/vision/stable/models.html) |
+| ReNet18 Quantized | 11 | - | 69.5 | 88.9 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
+| ResNet50 Quantized | 26 | - | 75.9 | 92.8 | Manual | [Official Pytorch](https://pytorch.org/docs/stable/torchvision/models.html) |
 
+
+## Transforms
+The transformations available in the API to apply in the data augmentation methods are:
+- H Flip
+- V Flip 
+- H+V Flip
+- Blurring
+- Gamma
+- Gaussian Blur
+- Median Blur
+- Bilateral Filter
+- Equalize histogram
+- 2D-Filter'
+
+
+## Datasets
+In this work, we propose a benchmark of 10 partially annotated biomedical datasets, described in the following Table, and evaluate the performance of deep learning models and semi-supervised methods using such a benchmark.
+
+| Dataset | Number of Images | Number of  Classes | Description| Split | Reference |
+|--|--|--|--|--|--|
+| Blindness| 3662 | 5 | Diabetic retinopathy images| [Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EULlOvNF4ktMnxEx7l3QL04BIrAEBLXFgV80kc2wWBLj1Q?download=1) |[View](https://www.kaggle.com/c/aptos2019-blindness-detection)|
+| Chest X Ray| 2355 | 2 | Chest X-Rays images| [Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EU5FdFSUqvRIoJNl2-YiYEMB9DP4_LZ0NNs2v6KP0WB5SA?download=1)| [View](http://www.sciencedirect.com/science/article/pii/S0092867418301545)|
+| Fungi| 1204 | 4 | Dye decolourisation of fungal strain| [Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/ESoQP2IaXX1OpwhH8PINbUABsBmYlPK0ju7Pf5VLA37hZQ?download=1)|[View](https://link.springer.com/article/10.1007/s00500-019-03832-8)|
+| HAM 10000 | 10015 | 7 | Dermatoscopic images of skin lesions|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EbTiHB68w-5OuayrdUAa-CwBKeTsfJg7Hmdf9gGXqIH-Ig?download=1)|[View](https://www.nature.com/articles/sdata2018161)|
+| ISIC | 1500 | 7 | Colour images of skin lesions|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/ES74_yivyrZEukq5V6U_oWMBM2QkMSnPShKJKWiKy8fqgg?download=1)|[View](https://arxiv.org/pdf/1710.05006.pdf)|
+| Kvasir  | 8000 | 8 | Gastrointestinal disease images|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EYUWxPBUecpLpCTn-LSOHysB5DhP2QPabRjX_BxwJRyuEg?download=1)|[View](https://dl.acm.org/doi/10.1145/3083187.3083212)|
+| Open Sprayer| 6697 | 2 | Dron pictures of broad leaved docks|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/ESjVRz_J7aNPrO3_Py-J158B59R36h5ET42ifNiWRyLQAg?download=1)|[View](https://www.kaggle.com/gavinarmstrong/open-sprayer-images)|
+| Plants | 5500 | 12 | Colour images of plants|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EYhFL8NnxRROqnBQMXkVnJUBKOkH_OkJdWPqG4KsgWZaxQ?download=1)|[View](https://arxiv.org/pdf/1711.05458.pdf)|
+| Retinal OCT | 84484 | 4 | Retinal OCT images|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EVg_TNizZpFMnJkJQTBcuecBNzzULd7HxuHCNToInZU6gQ?download=1)|[View](http://www.sciencedirect.com/science/article/pii/S0092867418301545)|
+| Tobacco  | 3492 | 10 | Document images|[Download](https://unirioja-my.sharepoint.com/:u:/g/personal/adines_unirioja_es/EXdfQbAxx1lHn7PPBjWMotABZChHuV_BpkD0RTmZ94cM4Q?download=1)|[View](http://www.sciencedirect.com/science/article/pii/S0167865513004224)|
+
+For our study, we have split each of the datasets of the benchmark into two different sets: a training set with the 75 % of images and a testing set with the 25 % of the images. In addition, for each dataset we have selected 75 images per class using them as labelled images and leaving the rest of the training images as unlabelled images to apply the semi-supervised learning methods.
 
 ## Results
-In this section, we present a thorough analysis for the results obtained by the 7 
-compact networks and the 6 semi-supervised processes. In particular, we first compare 
-the performance of the networks when training using only the labelled data. 
-Then, we study the impact of applying the different semi-supervised methods. 
+In the following table we show the Mean (and standard deviation) F1-score for the different studied models for the base training method.
 
-All the networks used in our experiments are implemented in Pytorch, and have been trained 
-thanks to the functionality of the Fastai library. In addition, we have used a 
-GPU Nvidia RTX 2080 Ti for training the models.
+| Network | Blindness | Chest X Ray | Fungi | HAM 10000 | ISIC | Kvasir | Open Sprayer | Plants | Retinal OCT | Tobacco | Mean(std)||
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|ResNet-50 | 59.3 | 89.9 | 91.0 | 54.3 | 87.6 | 89.0 | 91.3 | 84.3 | 97.4 | 81.8 | 82.5(13.5)|
+|ResNet-101 | 58.2 | 90.7 | 86.9 | 52.0 | 84.0 | 83.8 | 95.8 | 84.3 | 96.4 | 80.1 | 81.2(14.1)|
+|EfficientNet | 53.6 | 84.1 | 84.7 | 52.8 | 85.0 | 85.4 | 96.8 | 84.0 | 98.1 | 72.9 | 79.7(14.8)|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|FBNet | 57.5 | 87.4 | 89.0 | 47.2 | 85.2 | 88.9 | 95.4 | 81.8 | 94.9 | 73.3 | 80.1(15.3)|
+|MixNet | 61.8 | 89.5 | 89.7 | 46.9 | 89.9 | 86.8 | 95.5 | 86.2 | 98.9 | 76.7 | 82.2(15.3)|
+|MNasNet | 56.2 | 89.2 | 90.3 | 55.8 | 81.9 | 84.6 | 95.7 | 82.5 | 97.4 | 75.3  | 80.9(13.9)|
+|MobileNet | 52 | 86.9 | 89.0 | 46.7 | 84.1 | 82.1 | 89.1 | 82.9 | 91.0 | 69.4 | 77.3(15.1)|
+|ResNet-18 | 56.3 | 90.3 | 94.2 | 53.7 | 86.8 | 84.1 | 91.6 | 80.0 | 97.7 | 77.5 | 81.2(14.4)|
+|SqueezeNet | 50.3 | 88.3 | 79.3 | 43.6 | 76.8 | 80.1 | 90.9 | 78.9 | 93.2 | 75.5 | 75.7(15.5)|
+|ShuffleNet | 39.5 | 85.7 | 69.9 | 37.6 | 78.9 | 67.0 | 89.6 | 51.9 | 33.9 | 40.7 | 59.5(20.2)|
+|--|--|--|--|--|--|--|--|--|--|--|--|
+|ResNet-18 quantized | 45.1 | 77.8 | 88.1 | 47.0 | 86.5 | 84.2 | 91.3 | 75.1 | 91.6 | 55.8 | 74.3(17.2)| 
+|ResNet-50 quantized | 48.6 | 77.2 | 83.2 | 42.9 | 78.6 | 81.1 | 85.4 | 77.7 | 91.6 | 69.7 | 73.6(15.0)|
 
-### SIIM-ISIC Melanoma
-Performance comparison of the different architectures trained with the seven 
-different processes (Base, PD: Plain Distillation, DD: Data Distillation, MD: Model 
-Distillation, MDD: Model Data Distillation, FixMatch and MixMatch) in the SIIM-ISIC Melanoma dataset. 
-In bold face the best model.
+Full results for each dataset can be found in the results folder.
 
-In this case we have used 4 different metrics: Accuracy, F1-score, Precision and Recall;
-to compare the performance of the different architectures.
-#### Accuracy
+## Examples of use
+We have created two notebooks with a small example of how to build and execute the API methods.
+- [Sel-Training example](https://colab.research.google.com/drive/1p_97Kvwmb_gMIoBfn2T_Zc204FYREc4A?usp=sharing)
+- [Consistency-Regularisation example](https://colab.research.google.com/drive/1RH_CKva0kOMcJyYUGuj6AGBKht-9RwTR?usp=sharing)
 
-| Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
-|--|--|--|--|--|--|--|--|
-| ResNet50 | 83.0 | - | - | - | - | - | - |
-| ResNet101 | 83.0 | - | - | - | - | - | - |
-| EfficientNet | 84.0 | - | - | - | - | - | - |
-| FBNet | 58.5 | 82.5 | **84.5** | 83.5 | 82.5 | **84.5** | 78.0 |
-| MixNet | 50.0 | 75.5 | 67.5 | 69.5 | 74.5 | 72.0 | 73.5 |
-| MNasNet | 53.0 | 80.5 | 79.5 | 50.0 | 50.0 | 73.5 | 68.5 |
-| MobileNet | 82.0 | 80.5 | 82.5 | 77.0 | 78.5 | 81.5 | 77.5 |
-| ResNet18 | 81.5 | 82.0 | 81.0 | **84.5** | 81.5 | 82.0 | 75.0 |
-| SqeezeNet | 78.5 | 78.5 | 80.5 | 80.5 | 77.5 | 77.0 | 83.0 |
-| ShuffleNet | 78.5 | 77.5 | 78.0 | 77.5 | 77.5 | 78.5 | 75.0 |
 
-#### F1-Score
-
-| Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
-|--|--|--|--|--|--|--|--|
-| ResNet50 | 82.8 | - | - | - | - | - | - |
-| ResNet101 | 82.1 | - | - | - | - | - | - |
-| EfficientNet | 82.8 | - | - | - | - | - | - |
-| FBNet | 36.6 | 81.7 | 83.6 | 82.7 | 80.4 | 84.3 | 79.2 |
-| MixNet | 0 | 71.7 | 55.2 | 62.1 | 68.7 | 74.8 | 77.8 |
-| MNasNet | 19.0 | 78.2 | 76.0 | 50.0 | 50.0 | 69.0 | 74.3 |
-| MobileNet | 80.4 | 78.0 | 81.3 | 70.9 | 74.3 | 80.2 | 76.4 |
-| ResNet18 | 81.4 | 82.2 | 80.4 | **84.6** | 80.8 | 82.0 | 77.9 |
-| SqeezeNet | 78.2 | 75.1 | 78.7 | 77.2 | 73.7 | 77.2 | 83.7 |
-| ShuffleNet | 80.5 | 76.7 | 77.3 | 74.6 | 73.4 | 81.1 | 78.8 |
-
-#### Precision
-
-| Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
-|--|--|--|--|--|--|--|--|
-| ResNet50 | 83.7 | - | - | - | - | - | - |
-| ResNet101 | 86.7 | - | - | - | - | - | - |
-| EfficientNet | 89.5 | - | - | - | - | - | - |
-| FBNet | 77.4 | 85.7 | 88.8 | 86.8 | 91.1 | 85.6 | 75.0 |
-| MixNet | 0 | 84.9 | 88.9 | 82.0 | 88.9 | 68.0 | 66.9 |
-| MNasNet | 68.8 | 88.6 | 91.5 | 50.0 | 50.0 | 83.1 | 62.8 |
-| MobileNet | 88.1 | 89.6 | 87.4 | **96.6** | 92.5 | 86.2 | 80.2 |
-| ResNet18 | 81.8 | 81.4 | 83.0 | 84.2 | 83.9 | 82.0 | 69.8 |
-| SqeezeNet | 79.4 | 89.0 | 86.7 | 93.0 | 88.7 | 76.5 | 80.6 |
-| ShuffleNet | 73.6 | 79.6 | 79.8 | 85.7 | 89.9 | 72.4 | 68.4 |
-
-#### Recall
-
-| Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
-|--|--|--|--|--|--|--|--|
-| ResNet50 | 82.0 | - | - | - | - | - | - |
-| ResNet101 | 78.0 | - | - | - | - | - | - |
-| EfficientNet | 77.0 | - | - | - | - | - | - |
-| FBNet | 24.0 | 78.0 | 79.0 | 79.0 | 72.0 | 83.0 | 84.0 |
-| MixNet | 0 | 62.0 | 40.0 | 50.0 | 56.0 | 83.0 | **93.0** |
-| MNasNet | 11.0 | 70.0 | 65.0 | 50.0 | 50.0 | 59.0 | 91.0 |
-| MobileNet | 74.0 | 69.0 | 76.0 | 56.0 | 62.0 | 75.0 | 73.0 |
-| ResNet18 | 81.0 | 83.0 | 78.0 | 85.0 | 78.0 | 82.0 | 88.0 |
-| SqeezeNet | 77.0 | 65.0 | 72.0 | 66.0 | 63.0 | 78.0 | 87.0 |
-| ShuffleNet | 89.0 | 74.0 | 75.0 | 66.0 | 62.0 | 92.0 | **93.0** |
-
-### APTOS Blindness
-Performance comparison of the different architectures trained with the seven 
-different processes (Base, PD: Plain Distillation, DD: Data Distillation, MD: Model 
-Distillation, MDD: Model Data Distillation, FixMatch and MixMatch) in the APTOS Blindness dataset. 
-In bold face the best model.
-
-In this case we have a multiclass classification problem and then we have only used Accuracy
-to compare the performance of the different architectures.
-
-| Network | Base | PD | DD | MD | MDD | FixMatch | MixMatch |
-|--|--|--|--|--|--|--|--|
-| ResNet50 | 82.1 | - | - | - | - | - | - |
-| ResNet101 | 83.0 | - | - | - | - | - | - |
-| EfficientNet | 82.1 | - | - | - | - | - | - |
-| FBNet | 83.0 | 83.0 | 83.3 | 83.3 | 83.7 | 83.6 | 78.5 |
-| MixNet | 72.2 | 71.1 | 70.3 | 71.3 | 70.9 | 72.64 | 69.2 |
-| MNasNet | 70.7 | 80.0 | 80.0 | 64.4 | 78.3 | 78.2 | 80.8 |
-| MobileNet | 80.4 | 81.5 | 82.8 | 81.8 | 79.3 | **84.8** | 83.0 |
-| ResNet18 | 83.3 | 82.5 | 82.1 | 82.5 | 82.9 | 84.7 | 70.5 |
-| SqeezeNet | 78.8 | 82.1 | 79.5 | 81.0 | 81.0 | 82.2 | 73.3 |
-| ShuffleNet | 72.9 | 72.8 | 72.8 | 73.9 | 72.4 | 72.6 | 65.5 |
