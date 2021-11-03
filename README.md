@@ -20,10 +20,10 @@ In this api we present different semi-supervised methods grouped into two differ
 
 ### Self-training methods
 The self-training methods are the following, for more information of this methods see [this](https://www.sciencedirect.com/science/article/pii/S0169260720316151):
-- Plain Distillation $\rightarrow$ plainDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath,confidence)
-- Data Distillation $\rightarrow$ dataDistillation(baseModel, targetModel, transforms, path, pathUnlabelled, outputPath, confidence)
-- Model Distillation $\rightarrow$ modelDistillation(baseModels, targetModel, path, pathUnlabelled, outputPath, confidence)
-- ModelData Distillation $\rightarrow$ modelDataDistillation(baseModels, targetModel,transforms, path, pathUnlabelled, outputPath, confidence)
+- Plain Distillation ⟶ plainDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath,confidence)
+- Data Distillation ⟶ dataDistillation(baseModel, targetModel, transforms, path, pathUnlabelled, outputPath, confidence)
+- Model Distillation ⟶ modelDistillation(baseModels, targetModel, path, pathUnlabelled, outputPath, confidence)
+- ModelData Distillation ⟶ modelDataDistillation(baseModels, targetModel,transforms, path, pathUnlabelled, outputPath, confidence)
 
 
 ### Consistency-regularization methods
@@ -90,7 +90,7 @@ For our study, we have split each of the datasets of the benchmark into two diff
 ## Results
 In the following table we show the Mean (and standard deviation) F1-score for the different studied models for the base training method.
 
-| Network | Blindness | Chest X Ray | Fungi | HAM 10000 | ISIC | Kvasir | Open Sprayer | Plants | Retinal OCT | Tobacco | Mean(std)||
+| Network | Blindness | Chest X Ray | Fungi | HAM 10000 | ISIC | Kvasir | Open Sprayer | Plants | Retinal OCT | Tobacco | Mean(std)|
 |--|--|--|--|--|--|--|--|--|--|--|--|
 |ResNet-50 | 59.3 | 89.9 | 91.0 | 54.3 | 87.6 | 89.0 | 91.3 | 84.3 | 97.4 | 81.8 | 82.5(13.5)|
 |ResNet-101 | 58.2 | 90.7 | 86.9 | 52.0 | 84.0 | 83.8 | 95.8 | 84.3 | 96.4 | 80.1 | 81.2(14.1)|
