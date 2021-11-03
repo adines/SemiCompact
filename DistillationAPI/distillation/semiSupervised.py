@@ -49,7 +49,7 @@ def pureDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath, b
         # Train base learner
         learn2.fine_tune(50, freeze_epochs=2)
         learn2.save(targetModel)
-        shutil.copy(path+'_tmp'+os.sep+'models' + os.sep + targetModel + '.pth', outputPath+os.sep+'target_'+baseModel+'.pth')
+        shutil.copy(path+'_tmp'+os.sep+'models' + os.sep + targetModel + '.pth', outputPath+os.sep+'target_'+targetModel+'.pth')
         shutil.rmtree(path+'_tmp')
 
 
@@ -100,7 +100,7 @@ def dataDistillation(baseModel, targetModel, transforms, path, pathUnlabelled, o
         learn2.fine_tune(50, freeze_epochs=2)
         learn2.save(targetModel)
         shutil.copy(path + '_tmp' + os.sep + 'models' + os.sep + targetModel + '.pth',
-                    outputPath + os.sep + 'target_' + baseModel + '.pth')
+                    outputPath + os.sep + 'target_' + targetModel + '.pth')
         shutil.rmtree(path + '_tmp')
 
 
@@ -156,7 +156,7 @@ def modelDistillation(baseModels, targetModel, path, pathUnlabelled, outputPath,
         learn2.fine_tune(50, freeze_epochs=2)
         learn2.save(targetModel)
         shutil.copy(path + '_tmp' + os.sep + 'models' + os.sep + targetModel + '.pth',
-                    outputPath + os.sep + 'target_' + baseModel + '.pth')
+                    outputPath + os.sep + 'target_' + targetModel + '.pth')
         shutil.rmtree(path + '_tmp')
 
 
@@ -212,5 +212,5 @@ def modelDataDistillation(baseModels, targetModel, transforms, path, pathUnlabel
         learn2.fine_tune(50, freeze_epochs=2)
         learn2.save(targetModel)
         shutil.copy(path + '_tmp' + os.sep + 'models' + os.sep + targetModel + '.pth',
-                    outputPath + os.sep + 'target_' + baseModel + '.pth')
+                    outputPath + os.sep + 'target_' + targetModel + '.pth')
         shutil.rmtree(path + '_tmp')
