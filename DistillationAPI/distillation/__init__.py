@@ -1,6 +1,6 @@
 from distillation.semiSupervised import *
 
-__all__=['pureDistillation','dataDistillation','modelDistillation','modelDataDistillation']
+__all__=['plainDistillation','dataDistillation','modelDistillation','modelDataDistillation']
 
 plainDistillation.__module__='distillation'
 dataDistillation.__module__='distillation'
