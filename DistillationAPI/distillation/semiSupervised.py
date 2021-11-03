@@ -6,7 +6,7 @@ import shutil
 import os
 
 
-def pureDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath, bs=32, size=224, confidence=0.8):
+def plainDistillation(baseModel, targetModel, path, pathUnlabelled, outputPath, bs=32, size=224, confidence=0.8):
     if not testNameModel(baseModel):
         print("The base model selected is not valid")
     elif not testNameModel(targetModel):
