@@ -28,8 +28,8 @@ The self-training methods are the following, for more information of this method
 
 ### Consistency-regularization methods
 The consistency regularization methods are the following, for more information see this [link](https://proceedings.neurips.cc/paper/2016/file/30ef30b64204a3088a26bc2e6ecf7602-Paper.pdf):
-- FixMatch $\rightarrow$ FixMatch(targetModel, path, pathUnlabelled, outputPath)
-- MixMatch $\rightarrow$ MixMatch(targetModel, path, pathUnlabelled, outputPath)
+- FixMatch ⟶ FixMatch(targetModel, path, pathUnlabelled, outputPath)
+- MixMatch ⟶ MixMatch(targetModel, path, pathUnlabelled, outputPath)
 
 
 ## Networks
@@ -95,7 +95,6 @@ In the following table we show the Mean (and standard deviation) F1-score for th
 |ResNet-50 | 59.3 | 89.9 | 91.0 | 54.3 | 87.6 | 89.0 | 91.3 | 84.3 | 97.4 | 81.8 | 82.5(13.5)|
 |ResNet-101 | 58.2 | 90.7 | 86.9 | 52.0 | 84.0 | 83.8 | 95.8 | 84.3 | 96.4 | 80.1 | 81.2(14.1)|
 |EfficientNet | 53.6 | 84.1 | 84.7 | 52.8 | 85.0 | 85.4 | 96.8 | 84.0 | 98.1 | 72.9 | 79.7(14.8)|
-|--|--|--|--|--|--|--|--|--|--|--|--|
 |FBNet | 57.5 | 87.4 | 89.0 | 47.2 | 85.2 | 88.9 | 95.4 | 81.8 | 94.9 | 73.3 | 80.1(15.3)|
 |MixNet | 61.8 | 89.5 | 89.7 | 46.9 | 89.9 | 86.8 | 95.5 | 86.2 | 98.9 | 76.7 | 82.2(15.3)|
 |MNasNet | 56.2 | 89.2 | 90.3 | 55.8 | 81.9 | 84.6 | 95.7 | 82.5 | 97.4 | 75.3  | 80.9(13.9)|
@@ -103,7 +102,6 @@ In the following table we show the Mean (and standard deviation) F1-score for th
 |ResNet-18 | 56.3 | 90.3 | 94.2 | 53.7 | 86.8 | 84.1 | 91.6 | 80.0 | 97.7 | 77.5 | 81.2(14.4)|
 |SqueezeNet | 50.3 | 88.3 | 79.3 | 43.6 | 76.8 | 80.1 | 90.9 | 78.9 | 93.2 | 75.5 | 75.7(15.5)|
 |ShuffleNet | 39.5 | 85.7 | 69.9 | 37.6 | 78.9 | 67.0 | 89.6 | 51.9 | 33.9 | 40.7 | 59.5(20.2)|
-|--|--|--|--|--|--|--|--|--|--|--|--|
 |ResNet-18 quantized | 45.1 | 77.8 | 88.1 | 47.0 | 86.5 | 84.2 | 91.3 | 75.1 | 91.6 | 55.8 | 74.3(17.2)| 
 |ResNet-50 quantized | 48.6 | 77.2 | 83.2 | 42.9 | 78.6 | 81.1 | 85.4 | 77.7 | 91.6 | 69.7 | 73.6(15.0)|
 
