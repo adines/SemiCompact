@@ -66,7 +66,7 @@ The transformations available in the API to apply in the data augmentation metho
 - Median Blur
 - Bilateral Filter
 - Equalize histogram
-- 2D-Filter'
+- 2D-Filter
 
 
 ## Datasets
